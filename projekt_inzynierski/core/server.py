@@ -115,13 +115,16 @@ class AppServer(Flask):
         def register():
             l = request.form["login"]
             p = request.form["password"]
-            s = False
             if "alias" in request.form.keys():
                 s = new_user(l, p, 1, self.db, alias=request.form["alias"])
             else:
                 s = new_user(l, p, 1, self.db)
 
             if s:
+                # TEMPORARY EXAMPLE DATA
+                user_id = self.db.get_user_id(l)
+                self.db.create_module_data(user_id, ["example_module_1", "example_module_2", "123"], {})
+                # !!!!!!!!!!!!!!!!!!!!!!!!!!!
                 return render_template("index.html", status_message = "register_success"), 201
             return render_template("index.html", status_message = "register_fail"), 200
 
@@ -139,5 +142,20 @@ class AppServer(Flask):
         @self.route("/api/sql")
         @check_auth(2)
         def sql(user_id, token):
+            # TODO
+            return render_template("admin.html"), 200
+
+        @self.route("/api/own_data")
+        @check_auth(0)
+        def own_data(user_id, token):
+            i = user_info(user_id, self.db)
+            if not i:
+                i = {}
+            i["completed_modules"] = self.db.get_complete_modules(user_id)
+            return i, 200
+
+        @self.route("/api/own_module_progress")
+        @check_auth(0)
+        def own_module_progress(user_id, token):
             # TODO
             return render_template("admin.html"), 200

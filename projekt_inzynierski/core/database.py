@@ -25,6 +25,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 For more information, please refer to <https://unlicense.org/>
 """
 import base64
+import json
 import os
 import random
 from sqlite3 import *
@@ -38,6 +39,7 @@ from types import NoneType
                 1 - verified user
                 2 - administrator
         TOKENS - [id, user_id, value, expiration_time] # value nie może być jako base64 bo where wtedy nie działa
+        MODULE_DATA - [id, user_id, completed_modules, module_progress]
         
         TODO:
             - listy ukończonych modułów i zadań
@@ -71,9 +73,44 @@ class DatabaseAccess:
             self.db.execute(
                 "CREATE TABLE Tokens(id INTEGER PRIMARY KEY, user_id INT UNIQUE ON CONFLICT REPLACE, value TEXT NOT NULL, expiration_time INT NOT NULL, FOREIGN KEY(user_id) REFERENCES Users(id))")
 
+        self.db.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='ModuleData'")
+        if self.db.fetchone()[0] != 1:
+            self.db.execute(
+                "CREATE TABLE ModuleData(id INTEGER PRIMARY KEY, user_id INT UNIQUE ON CONFLICT REPLACE, complete_modules TEXT NOT NULL, module_progress TEXT NOT NULL, FOREIGN KEY(user_id) REFERENCES Users(id))")
+
         self._commit()
 
 
+    def create_module_data_raw(self, user_id: int, complete_modules: str, module_progress: str) -> bool:
+        try:
+            self.db.execute("REPLACE INTO ModuleData(user_id, complete_modules, module_progress) values(?, ?, ?)", (user_id, complete_modules, module_progress,))
+            self._commit()
+        except Exception:
+            return False
+        return True
+
+
+    def update_complete_modules_raw(self, user_id: int, complete_modules: str) -> bool:
+        try:
+            self.db.execute("UPDATE ModuleData SET complete_modules = ? WHERE user_id = ?", (user_id, complete_modules,))
+            self._commit()
+        except Exception:
+            return False
+        return True
+
+    def get_complete_modules(self, user_id: int) -> list | NoneType:
+        self.db.execute("SELECT complete_modules FROM ModuleData WHERE user_id = ?", (user_id,))
+        f = self.db.fetchone()
+        if f:
+            return json.loads(f[0])
+        return None
+
+
+    def create_module_data(self, user_id: int, complete_modules: list, module_progress: dict) -> bool:
+        return self.create_module_data_raw(user_id, json.dumps(complete_modules), json.dumps(module_progress))
+
+    def update_complete_modules(self, user_id: int, complete_modules: list) -> bool:
+        return self.update_complete_modules_raw(user_id, json.dumps(complete_modules))
 
 
     def put_token_raw(self, user_id: int, token: bytes, expiration_stamp: int) -> bool:
@@ -92,14 +129,14 @@ class DatabaseAccess:
             return False
         return True
 
+
+
     def get_user_and_expiration_raw(self, token: bytes) -> tuple[bytes, int] | tuple[None, None]:
         self.db.execute("SELECT user_id, expiration_time FROM Tokens WHERE value = ?", (token, ))
         f = self.db.fetchone()
         if f:
             return f[0], f[1]
         return None, None
-
-
 
     def put_token(self, user_id: int, token: bytes, expiration_stamp: int) -> bool:
         return self.put_token_raw(user_id, base64.decodebytes(token), expiration_stamp)
@@ -138,5 +175,5 @@ class DatabaseAccess:
         self.db.execute("SELECT login, alias, perms, creation_time from Users WHERE id = ?", (user_id,))
         f = self.db.fetchone()
         if f:
-            return {"id": user_id, "login": f[0], "alias": f[1], "perms": f[2], "creation_time": f[3]}
+            return {"login": f[0], "alias": f[1], "perms": f[2], "creation_time": f[3]}
         return None
