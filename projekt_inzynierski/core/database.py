@@ -98,8 +98,23 @@ class DatabaseAccess:
             return False
         return True
 
+    def update_module_progress_raw(self, user_id: int, module_progress: str) -> bool:
+        try:
+            self.db.execute("UPDATE ModuleData SET module_progress = ? WHERE user_id = ?", (user_id, module_progress,))
+            self._commit()
+        except Exception:
+            return False
+        return True
+
     def get_complete_modules(self, user_id: int) -> list | NoneType:
         self.db.execute("SELECT complete_modules FROM ModuleData WHERE user_id = ?", (user_id,))
+        f = self.db.fetchone()
+        if f:
+            return json.loads(f[0])
+        return None
+
+    def get_module_progress(self, user_id: int) -> list | NoneType:
+        self.db.execute("SELECT module_progress FROM ModuleData WHERE user_id = ?", (user_id,))
         f = self.db.fetchone()
         if f:
             return json.loads(f[0])
@@ -111,6 +126,9 @@ class DatabaseAccess:
 
     def update_complete_modules(self, user_id: int, complete_modules: list) -> bool:
         return self.update_complete_modules_raw(user_id, json.dumps(complete_modules))
+
+    def update_module_progress(self, user_id: int, module_progress: list) -> bool:
+        return self.update_module_progress_raw(user_id, json.dumps(module_progress))
 
 
     def put_token_raw(self, user_id: int, token: bytes, expiration_stamp: int) -> bool:

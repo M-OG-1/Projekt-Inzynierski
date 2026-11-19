@@ -123,7 +123,7 @@ class AppServer(Flask):
             if s:
                 # TEMPORARY EXAMPLE DATA
                 user_id = self.db.get_user_id(l)
-                self.db.create_module_data(user_id, ["example_module_1", "example_module_2", "123"], {})
+                self.db.create_module_data(user_id, ["example_module_1", "example_module_2", "123"], {"example_module_1337": {"task_1": True, "task_2": False}, "example_module_DEADBEEF": {"task_134524366525": False}})
                 # !!!!!!!!!!!!!!!!!!!!!!!!!!!
                 return render_template("index.html", status_message = "register_success"), 201
             return render_template("index.html", status_message = "register_fail"), 200
@@ -157,5 +157,7 @@ class AppServer(Flask):
         @self.route("/api/own_module_progress")
         @check_auth(0)
         def own_module_progress(user_id, token):
-            # TODO
-            return render_template("admin.html"), 200
+            p = self.db.get_module_progress(user_id)
+            if not p:
+                return {}, 200
+            return p, 200
