@@ -1,0 +1,28 @@
+<!-- templates/auth_test_successful.html-->
+
+<html lang="en">
+
+<head>
+    <title>Token Authentication Successful</title>
+</head>
+
+<body>
+    <div>
+        <h1>Token Authentication Successful</h1>
+        <div>
+            <h2>User Info:</h2>
+            <ol>
+                <li>{{id}}</li>
+                <li>{{alias}}</li>
+                <li>{{login}}</li>
+                <li>{{perms}}</li>
+                <li>{{creation_time}}</li>
+            </ol>
+
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+        <a href="/">Return</a>
+    </div>
+</body>
+
+</html>
