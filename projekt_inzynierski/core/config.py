@@ -29,6 +29,7 @@ class Config(dict):
         super().__init__()
         self["token_duration"] = 60 * 60 * 2
         self["auto_refresh_tokens"] = True
+        self["bind_address"] = "192.168.122.1"
 
 
 config_instance = Config()

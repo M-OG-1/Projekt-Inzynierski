@@ -92,7 +92,11 @@ class AppServer(Flask):
 
         @self.route("/api/login", methods=["POST"])
         def login():
+            if "login" not in request.form.keys():
+                return render_template("index.html", status_message="login_fail"), 400
             l = request.form["login"]
+            if "password" not in request.form.keys():
+                return render_template("index.html", status_message="login_fail"), 400
             p = request.form["password"]
             s = check_password(l, p, self.db)
             if s:
@@ -113,7 +117,11 @@ class AppServer(Flask):
 
         @self.route("/api/register", methods=["POST"])
         def register():
+            if "login" not in request.form.keys():
+                return render_template("index.html", status_message="register_fail"), 400
             l = request.form["login"]
+            if "password" not in request.form.keys():
+                return render_template("index.html", status_message="register_fail"), 400
             p = request.form["password"]
             if "alias" in request.form.keys():
                 s = new_user(l, p, 1, self.db, alias=request.form["alias"])
@@ -121,10 +129,10 @@ class AppServer(Flask):
                 s = new_user(l, p, 1, self.db)
 
             if s:
-                # TEMPORARY EXAMPLE DATA
+                # TYMCZASOWE DANE NA POKAZ !!!
                 user_id = self.db.get_user_id(l)
-                self.db.create_module_data(user_id, ["example_module_1", "example_module_2", "123"], {"example_module_1337": {"task_1": True, "task_2": False}, "example_module_DEADBEEF": {"task_134524366525": False}})
-                # !!!!!!!!!!!!!!!!!!!!!!!!!!!
+                self.db.create_module_data(user_id, ["example_module_1", "example_module_2", "123"], {"example_module_1337": {"task_1": True, "task_2": False, "task_3": True, "task_4": True, "task_5": False}, "example_module_DEADBEEF": {"task_134524366525": False}})
+                # !!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 return render_template("index.html", status_message = "register_success"), 201
             return render_template("index.html", status_message = "register_fail"), 200
 
@@ -139,11 +147,14 @@ class AppServer(Flask):
         def admin_route(user_id, token):
             return render_template("admin.html"), 200
 
-        @self.route("/api/sql")
+        @self.route("/api/sql", methods=["POST"])
         @check_auth(2)
         def sql(user_id, token):
-            # TODO
-            return render_template("admin.html"), 200
+            if "query" not in request.form.keys():
+                return render_template("admin.html"), 400
+            q = request.form["query"]
+            r = self.db.query(q)
+            return render_template("admin.html", sql_query_result=r), 200
 
         @self.route("/api/own_data")
         @check_auth(0)

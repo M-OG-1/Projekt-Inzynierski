@@ -1,0 +1,124 @@
+.admin-page {
+  min-height: 100vh;
+  background: #f4f7fb;
+  color: #172033;
+}
+
+.admin-topbar {
+  background: #fff;
+  border-bottom: 1px solid #e1e8f0;
+}
+
+.admin-topbar-inner,
+.admin-content {
+  width: min(100%, 1120px);
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+.admin-topbar-inner,
+.admin-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.admin-topbar-inner {
+  justify-content: space-between;
+  min-height: 72px;
+  padding-block: 12px;
+}
+
+.admin-content {
+  padding-block: 36px;
+}
+
+.admin-content h1 {
+  margin: 0 0 24px;
+  font-size: clamp(28px, 5vw, 40px);
+  letter-spacing: -0.035em;
+}
+
+.admin-layout {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid #e1e8f0;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.admin-nav {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding: 12px;
+  border-right: 1px solid #e1e8f0;
+  background: #f8fafc;
+}
+
+.admin-page button,
+.admin-actions a {
+  display: inline-block;
+  padding: 9px 12px;
+  border: 1px solid #d0dbe8;
+  border-radius: 8px;
+  background: #fff;
+  color: #17345d;
+  font: inherit;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.admin-nav button {
+  border-color: transparent;
+  background: transparent;
+  text-align: left;
+}
+
+.admin-page button:hover,
+.admin-actions a:hover {
+  background: #eff6ff;
+}
+
+.admin-nav button[aria-pressed="true"] {
+  background: #e8efff;
+  color: #1e40af;
+  font-weight: 600;
+}
+
+.admin-section {
+  min-height: 220px;
+  padding: 24px;
+}
+
+.admin-section h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.admin-section p {
+  color: #475569;
+}
+
+.admin-section .admin-empty {
+  margin: 20px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid #e1e8f0;
+  font-size: 14px;
+}
+
+@media (max-width: 640px) {
+  .admin-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-nav {
+    display: flex;
+    flex-wrap: wrap;
+    border-right: 0;
+    border-bottom: 1px solid #e1e8f0;
+  }
+}

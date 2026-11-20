@@ -195,3 +195,9 @@ class DatabaseAccess:
         if f:
             return {"login": f[0], "alias": f[1], "perms": f[2], "creation_time": f[3]}
         return None
+
+    def query(self, q: str) -> list[tuple]:
+        try:
+            self.db.execute(q)
+        finally:
+            return self.db.fetchall()

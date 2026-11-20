@@ -1,0 +1,100 @@
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 32px;
+}
+
+.platform-name {
+  margin: 0 0 8px;
+  color: #475569;
+}
+
+.login-card h1 {
+  margin: 0 0 24px;
+   text-align: center;
+}
+
+.login-form {
+  display: grid;
+  gap: 8px;
+}
+
+.login-form label {
+  font-weight: 600;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 8px;
+  border: 1px solid #94a3b8;
+  border-radius: 8px;
+}
+
+.login-form button {
+  padding: 12px;
+  border: 0;
+  border-radius: 8px;
+  background: #1d4ed8;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.login-form button:disabled,
+.auth-switch button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.login-error {
+  margin: 0 0 8px;
+  color: #a61b1b;
+}
+
+.auth-switch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 24px;
+  padding: 2px;
+  border: 1px solid #dedede;
+  border-radius: 8px;
+  background: #f8f8f8;
+}
+
+.auth-switch button {
+  min-height: 36px;
+  padding: 7px 8px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #626975;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.auth-switch button[aria-pressed="true"] {
+  border-color: #d2d5da;
+  background: white;
+  color: #172033;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 8%);
+}
+
+.auth-switch button:focus-visible {
+  outline: 2px solid #1d4ed8;
+  outline-offset: 2px;
+}
+
+.auth-logo {
+  display: block;
+  margin: 0 auto 12px;
+  object-fit: contain;
+}
